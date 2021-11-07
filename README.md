@@ -4,7 +4,7 @@ CloudContext
 
 
 ```ruby
-require "cloudcontext"
+require "cloud_context"
 ```
 
 
@@ -22,5 +22,5 @@ Yes please  :)
 
 
 ----
-![Gem](https://img.shields.io/gem/dt/cloudcontext?style=plastic)
-[![codecov](https://codecov.io/gh/dpep/cloudcontext_rb/branch/main/graph/badge.svg)](https://codecov.io/gh/dpep/cloudcontext_rb)
+![Gem](https://img.shields.io/gem/dt/cloud_context?style=plastic)
+[![codecov](https://codecov.io/gh/dpep/cloud_context_rb/branch/main/graph/badge.svg)](https://codecov.io/gh/dpep/cloud_context_rb)
