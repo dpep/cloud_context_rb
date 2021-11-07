@@ -1,6 +1,8 @@
 require "byebug"
+require "ice_age"
 require "rspec"
 require "simplecov"
+require "rack/test"
 
 SimpleCov.start do
   add_filter /spec/
@@ -23,6 +25,8 @@ RSpec.configure do |config|
     # verify existence of stubbed methods
     mocks.verify_partial_doubles = true
   end
+
+  include Rack::Test::Methods
 end
 
 # Dir["./spec/support/**/*.rb"].sort.each { |f| require f }
