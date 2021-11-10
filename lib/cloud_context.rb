@@ -4,6 +4,7 @@ module CloudContext
   extend self
 
   autoload :Rack, "cloud_context/rack"
+  autoload :RSpec, "cloud_context/rspec"
   # autoload :Railtie, "cloud_context/railtie"
 
   def [](key)
