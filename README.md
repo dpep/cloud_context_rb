@@ -22,5 +22,13 @@ Yes please  :)
 
 
 ----
+### Inspired by
+
+- https://webapps-for-beginners.rubymonstas.org/rack/rack_env.html
+- [request_store](https://github.com/steveklabnik/request_store)
+- [request_context](https://github.com/remind101/request_context)
+
+
+----
 ![Gem](https://img.shields.io/gem/dt/cloud_context?style=plastic)
 [![codecov](https://codecov.io/gh/dpep/cloud_context_rb/branch/main/graph/badge.svg)](https://codecov.io/gh/dpep/cloud_context_rb)
