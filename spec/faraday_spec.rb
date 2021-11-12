@@ -19,7 +19,7 @@ describe CloudContext::Faraday do
     end
   end
 
-  it 'calls' do
+  specify 'the base case works' do
     is_expected.to be_a Hash
     is_expected.to be_empty
   end
@@ -28,8 +28,9 @@ describe CloudContext::Faraday do
     expect(
       Faraday::Request.lookup_middleware(:cloud_context)
     ).to be CloudContext::Faraday::Adapter
+  end
 
-    # create a new connection with the middleware
+  it 'can be added to a new Faraday connection' do
     expect(
       Faraday.new.request(:cloud_context)
     ).to include CloudContext::Faraday::Adapter
@@ -38,6 +39,14 @@ describe CloudContext::Faraday do
   it 'adds CloudContext headers' do
     CloudContext['abc'] = 123
 
-    is_expected.to eq({ CloudContext.http_header_prefix + 'abc' => 123 })
+    is_expected.to include CloudContext.http_header
+  end
+
+  it 'serializes and sends CloudContext' do
+    CloudContext['abc'] = 123
+
+    expect(
+      JSON.load(subject[CloudContext.http_header])
+    ).to eq({ 'abc' => 123 })
   end
 end

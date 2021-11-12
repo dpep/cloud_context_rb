@@ -6,9 +6,10 @@ module CloudContext
 
     class Adapter < ::Faraday::Middleware
       def on_request(env)
-        CloudContext.to_h.each do |key, value|
-          env[:request_headers][CloudContext.http_header_prefix + key] = value
-        end
+        return if CloudContext.empty?
+
+        context = JSON.generate(CloudContext.to_h)
+        env[:request_headers][CloudContext.http_header] = context
       end
     end
   end

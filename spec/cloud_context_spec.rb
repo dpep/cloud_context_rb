@@ -2,43 +2,68 @@ describe CloudContext do
   after { CloudContext.clear }
 
   describe '.[]' do
-    it 'gets and sets values' do
+    it 'gets values' do
       CloudContext['abc'] = 123
       expect(CloudContext['abc']).to eq 123
     end
 
-    it 'normalizes keys' do
-      CloudContext['abc'] = 123
-      expect(CloudContext['abc']).to eq 123
-      expect(CloudContext['ABC']).to eq 123
+    it 'stringifies keys' do
+      CloudContext[:abc] = 123
       expect(CloudContext[:abc]).to eq 123
+      expect(CloudContext['abc']).to eq 123
+
+      CloudContext[123] = 456
+      expect(CloudContext[123]).to eq 456
+      expect(CloudContext['123']).to eq 456
     end
-
-    # it 'normalizes values' do
-
-    # end
   end
 
-  describe '.http_header_prefix' do
-    it { expect(described_class.http_header_prefix).to eq 'X_CC_' }
-  end
+  describe '.[]=' do
+    it 'deletes keys set to nil' do
+      CloudContext['abc'] = 123
+      expect(CloudContext['abc']).to eq 123
 
-  describe '.normalize_keys' do
-    def normalize(key, normalized)
-      CloudContext[key] = 123
-      expect(CloudContext.to_h.count).to eq 1
-      expect(CloudContext.to_h.keys.first).to eq(normalized)
-      CloudContext.clear
+      CloudContext['abc'] = nil
+      expect(CloudContext).to be_empty
     end
 
-    it 'normalizes keys' do
-      normalize 'abc', 'abc'
-      normalize 'ABc', 'abc'
-      normalize 'a b c', 'a_b_c'
-      normalize 'a-B-c', 'a_b_c'
-      normalize 'a#b$c', 'a_b_c'
-      normalize 'a 2 c', 'a_2_c'
-      normalize 'a . c', 'a___c'
+    it 'returns the assigned value' do
+      expect(CloudContext['abc'] = 123).to eq 123
+      expect(CloudContext['abc'] = nil).to eq nil
+    end
+
+    it 'ensures value can be serialized and deserialized' do
+      expect {
+        CloudContext['abc'] = :abc
+      }.to raise_error(ArgumentError)
+
+      expect {
+        CloudContext['abc'] = Time.now
+      }.to raise_error(ArgumentError)
+    end
+  end
+
+  describe '.delete' do
+    it 'removes a key' do
+      CloudContext['abc'] = 123
+      expect(CloudContext['abc']).to eq 123
+
+      CloudContext.delete('abc')
+      expect(CloudContext).to be_empty
+    end
+  end
+
+  describe '.http_header' do
+    subject { described_class.http_header }
+
+    it 'has a default value' do
+      is_expected.to be_a String
+      is_expected.not_to be_empty
+    end
+
+    it 'can be updated' do
+      described_class.http_header = 'CC_'
+      is_expected.to eq 'CC_'
     end
   end
 
@@ -68,7 +93,7 @@ describe CloudContext do
     end
 
     it 'normalizes the keys' do
-      CloudContext.update(ABC: 123)
+      CloudContext.update(abc: 123)
       expect(CloudContext.to_h).to eq({ 'abc' => 123 })
     end
 

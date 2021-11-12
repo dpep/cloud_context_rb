@@ -5,16 +5,11 @@ module CloudContext
     extend self
 
     def from_env(env)
-      env.each do |key, value|
-        # https://datatracker.ietf.org/doc/html/rfc3875#section-4.1.18
-        next unless key.start_with?('HTTP_')
-        key = key.delete_prefix('HTTP_')
+      context = env["HTTP_#{CloudContext.http_header}"]
+      return unless context
 
-        next unless key.start_with?(CloudContext.http_header_prefix)
-        key.delete_prefix!(CloudContext.http_header_prefix)
-
-        CloudContext[key] = value
-      end
+      CloudContext.update(JSON.load(context))
+    rescue JSON::ParserError
     end
 
     class Adapter

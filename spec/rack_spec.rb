@@ -1,15 +1,20 @@
 describe CloudContext::Rack do
+  after { CloudContext.clear }
+
   describe '#call' do
-    subject { CloudContext::Rack::Adapter.new(app).call(env) }
+    subject do
+      header CloudContext.http_header, JSON.generate(CloudContext.to_h)
+
+      # use rack-test to normalize headers
+      env = Rack::MockRequest.env_for('/', current_session.send(:headers_for_env))
+
+      CloudContext::Rack::Adapter.new(app).call(env)
+    end
 
     let(:app) { ->(*) {} }
-    let(:env) {
-      # use Rack::Test to normalize headers
-      Rack::MockRequest.env_for('/', current_session.send(:headers_for_env))
-    }
 
     it 'yields to the app' do
-      expect(app).to receive(:call).with(env)
+      expect(app).to receive(:call)
       subject
     end
 
@@ -18,31 +23,27 @@ describe CloudContext::Rack do
         [200, {'Content-Type' => 'text/plain'}, ['OK']]
       end
 
+      env = Rack::MockRequest.env_for('/')
       Rack::Lint.new(CloudContext::Rack::Adapter.new(app)).call(env)
     end
 
-    context 'when CloudContext headers are set' do
-      before do
-        header 'X-CC-ABC', '123'
-        header 'X-CC-FOO', 'bar'
+    it 'propogates into Rack context' do
+      CloudContext['abc'] = 123
+      CloudContext['foo'] = 'bar'
+
+      expect(app).to receive(:call) do
+        expect(CloudContext['abc']).to eq 123
+        expect(CloudContext['foo']).to eq 'bar'
       end
 
-      it 'initializes CloudContext' do
-        expect(app).to receive(:call) do
-          expect(CloudContext['abc']).to eq '123'
-          expect(CloudContext['foo']).to eq 'bar'
-        end
-
-        subject
-      end
+      subject
     end
 
-    it 'isolates the Rack contxt' do
+    it 'isolates this context from Rack' do
       CloudContext['abc'] = 123
 
       expect(app).to receive(:call) do
-        expect(CloudContext).to be_empty
-
+        CloudContext.delete('abc')
         CloudContext['xyz'] = '999'
       end
 
@@ -50,38 +51,51 @@ describe CloudContext::Rack do
 
       expect(CloudContext.to_h).to eq({ 'abc' => 123 })
     end
+
+    it 'isolates Rack from this context' do
+      CloudContext['abc'] = 123
+
+      expect(app).to receive(:call) do
+        expect(CloudContext).to be_empty
+      end
+
+      CloudContext::Rack::Adapter.new(app).call({})
+    end
   end
 
   context 'as Rack middleware' do
-    before { app.use CloudContext::Rack::Adapter }
+    subject do
+      header CloudContext.http_header, JSON.generate(CloudContext.to_h)
+      JSON::load(get('/').body)
+    end
 
     let(:app) do
       Rack::Builder.new do
         use Rack::Lint
+        use CloudContext::Rack::Adapter
 
         run (lambda do |env|
-          context = JSON.dump(CloudContext.to_h)
+          context = JSON.generate(CloudContext.to_h)
           [200, {'Content-Type' => 'application/json'}, [context]]
         end)
       end
     end
-    let(:response) { JSON::load(get('/').body) }
 
     it 'returns the context' do
-      expect(response).to be_a Hash
-      expect(response).to be_empty
+      is_expected.to be_a Hash
+      is_expected.to be_empty
     end
 
     it 'parses the headers correctly' do
-      header CloudContext.http_header_prefix + 'abc', '123'
-      header CloudContext.http_header_prefix + 'foo', 'bar'
+      CloudContext['abc'] = '123'
+      CloudContext['foo'] = 'bar'
 
-      expect(response).to eq({ 'abc' => '123', 'foo' => 'bar' })
+      is_expected.to eq({ 'abc' => '123', 'foo' => 'bar' })
     end
 
     it 'resets between requests' do
-      header CloudContext.http_header_prefix + 'abc', '123'
-      expect(response).to eq({ 'abc' => '123' })
+      CloudContext['abc'] = '123'
+      is_expected.to eq({ 'abc' => '123' })
 
       with_session('without header') do
         expect(JSON::load(get('/').body)).to be_empty

@@ -1,23 +1,32 @@
-require "cloud_context/version"
+require 'cloud_context/version'
 
 module CloudContext
   extend self
 
-  autoload :Faraday, "cloud_context/faraday"
-  autoload :Rack, "cloud_context/rack"
-  autoload :Rails, "cloud_context/rails"
-  autoload :RSpec, "cloud_context/rspec"
+  autoload :Faraday, 'cloud_context/faraday'
+  autoload :Rack, 'cloud_context/rack'
+  autoload :Rails, 'cloud_context/rails'
+  autoload :RSpec, 'cloud_context/rspec'
 
   def [](key)
     context[normalize_key(key)]
   end
 
   def []=(key, value)
-    context[normalize_key(key)] = normalize_value(value)
+    if value.nil?
+      delete(key)
+      nil
+    else
+      context[normalize_key(key)] = normalize_value(value)
+    end
   end
 
   def clear
     context.clear
+  end
+
+  def delete(key)
+    context.delete(normalize_key(key))
   end
 
   def empty?
@@ -44,11 +53,11 @@ module CloudContext
   end
 
   # config
-  attr_reader :http_header_prefix
+  attr_reader :http_header
 
-  @http_header_prefix = 'X_CC_'
-  def http_header_prefix=(prefix)
-    @http_header_prefix = prefix.upcase.tr('-', '_')
+  @http_header = 'X_CLOUD_CONTEXT'
+  def http_header=(header)
+    @http_header = header.upcase.tr('-', '_')
   end
 
   def contextualize(&block)
@@ -68,11 +77,17 @@ module CloudContext
   end
 
   def normalize_key(key)
-    key.to_s.downcase.gsub(/[^A-Za-z0-9_]/, '_')
+    key.to_s
   end
 
   def normalize_value(value)
-    # value.to_s
+    serialized = JSON.generate(value)
+    if JSON.load(serialized) != value
+      raise ArgumentError, "will not be deserialized properly: #{value}"
+    end
+
     value
+  rescue JSON::ParserError
+    raise ArgumentError, "can not be serialized: #{value}"
   end
 end

@@ -1,10 +1,11 @@
 require 'byebug'
+require 'faraday'
 require 'ice_age'
-require 'rspec'
-require 'simplecov'
 require 'rack/test'
 require 'rails'
+require 'rspec'
 require 'rspec/matchers/fail_matchers'
+require 'simplecov'
 
 SimpleCov.start do
   add_filter /spec/
