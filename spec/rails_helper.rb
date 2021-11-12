@@ -5,6 +5,7 @@ require 'rspec/rails'
 
 class EchoController < ActionController::Base
   def index
+    CloudContext.update(params['context'] || {})
     render json: CloudContext.to_h
   end
 end

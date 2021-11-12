@@ -18,9 +18,11 @@ describe CloudContext::Rails, type: :request do
   end
 
   subject do
-    expect(get('/')).to be 200
+    expect(get('/', params: { context: rails_context })).to be 200
     JSON.load(response.body)
   end
+
+  let(:rails_context) { {} }
 
   it 'renders fine' do
     is_expected.to be_a Hash
@@ -30,16 +32,18 @@ describe CloudContext::Rails, type: :request do
     is_expected.to be_empty
   end
 
-  it 'inherits the current CloudContext' do
+  it 'isolates the Rails context from this context' do
     CloudContext['abc'] = 123
-
-    is_expected.to eq({ 'abc' => 123 })
+    is_expected.to be_empty
+    expect(CloudContext.to_h).to eq({ 'abc' => 123 })
   end
 
-  it 'resets CloudContext after the request, via middleware' do
-    CloudContext['abc'] = 123
-    subject
+  context 'when Rails context updates CloudContext' do
+    let(:rails_context) { { 'abc' => '123' } }
 
-    expect(CloudContext).to be_empty
+    it 'isolates this context from Rails' do
+      is_expected.to eq rails_context
+      expect(CloudContext).to be_empty
+    end
   end
 end

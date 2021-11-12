@@ -37,14 +37,18 @@ describe CloudContext::Rack do
       end
     end
 
-    it 'clears CloudContext before returning' do
+    it 'isolates the Rack contxt' do
+      CloudContext['abc'] = 123
+
       expect(app).to receive(:call) do
-        CloudContext['abc'] = 123
+        expect(CloudContext).to be_empty
+
+        CloudContext['xyz'] = '999'
       end
 
       subject
 
-      expect(CloudContext['abc']).to be nil
+      expect(CloudContext.to_h).to eq({ 'abc' => 123 })
     end
   end
 

@@ -23,11 +23,11 @@ module CloudContext
       end
 
       def call(env)
-        CloudContext::Rack.from_env(env)
+        CloudContext.contextualize do
+          CloudContext::Rack.from_env(env)
 
-        @app.call(env)
-      ensure
-        CloudContext.clear
+          @app.call(env)
+        end
       end
     end
   end

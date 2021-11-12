@@ -78,4 +78,32 @@ describe CloudContext do
       expect(CloudContext['foo']).to eq 'bar'
     end
   end
+
+  describe '.contextualize' do
+    it 'isolates two contexts' do
+      CloudContext['abc'] = 123
+      expect(CloudContext.to_h).to eq({ 'abc' => 123 })
+
+      CloudContext.contextualize do
+        expect(CloudContext).to be_empty
+        CloudContext['foo'] = 'bar'
+        expect(CloudContext.to_h).to eq({ 'foo' => 'bar' })
+      end
+
+      expect(CloudContext.to_h).to eq({ 'abc' => 123 })
+    end
+
+    it 'ensures against exceptions' do
+      CloudContext['abc'] = 123
+
+      expect {
+        CloudContext.contextualize do
+          CloudContext['foo'] = 'bar'
+          raise IOError, 'oh no!'
+        end
+      }.to raise_error(IOError)
+
+      expect(CloudContext.to_h).to eq({ 'abc' => 123 })
+    end
+  end
 end

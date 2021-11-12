@@ -16,6 +16,10 @@ module CloudContext
     context[normalize_key(key)] = normalize_value(value)
   end
 
+  def clear
+    context.clear
+  end
+
   def empty?
     context.empty?
   end
@@ -24,10 +28,6 @@ module CloudContext
     normalize_value(
       context.fetch(normalize_key(key), *args, &block)
     )
-  end
-
-  def clear
-    Thread.current[:cloud_context] = nil
   end
 
   def to_h
@@ -51,10 +51,20 @@ module CloudContext
     @http_header_prefix = prefix.upcase.tr('-', '_')
   end
 
+  def contextualize(&block)
+    context # ensure context is initialized
+    Thread.current[:cloud_context].push({})[-1]
+
+    yield
+  ensure
+    Thread.current[:cloud_context].pop
+  end
+
   private
 
   def context
-    Thread.current[:cloud_context] ||= {}
+    Thread.current[:cloud_context] ||= [{}]
+    Thread.current[:cloud_context][-1]
   end
 
   def normalize_key(key)
