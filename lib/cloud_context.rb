@@ -3,6 +3,7 @@ require "cloud_context/version"
 module CloudContext
   extend self
 
+  autoload :Faraday, "cloud_context/faraday"
   autoload :Rack, "cloud_context/rack"
   autoload :Rails, "cloud_context/rails"
   autoload :RSpec, "cloud_context/rspec"
@@ -40,6 +41,14 @@ module CloudContext
         self[key] = value
       end
     end
+  end
+
+  # config
+  attr_reader :http_header_prefix
+
+  @http_header_prefix = 'X_CC_'
+  def http_header_prefix=(prefix)
+    @http_header_prefix = prefix.upcase.tr('-', '_')
   end
 
   private

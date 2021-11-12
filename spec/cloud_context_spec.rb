@@ -19,6 +19,10 @@ describe CloudContext do
     # end
   end
 
+  describe '.http_header_prefix' do
+    it { expect(described_class.http_header_prefix).to eq 'X_CC_' }
+  end
+
   describe '.normalize_keys' do
     def normalize(key, normalized)
       CloudContext[key] = 123

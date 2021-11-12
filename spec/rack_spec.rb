@@ -69,14 +69,14 @@ describe CloudContext::Rack do
     end
 
     it 'parses the headers correctly' do
-      header CloudContext::Rack.header_prefix + 'abc', '123'
-      header CloudContext::Rack.header_prefix + 'foo', 'bar'
+      header CloudContext.http_header_prefix + 'abc', '123'
+      header CloudContext.http_header_prefix + 'foo', 'bar'
 
       expect(response).to eq({ 'abc' => '123', 'foo' => 'bar' })
     end
 
     it 'resets between requests' do
-      header CloudContext::Rack.header_prefix + 'abc', '123'
+      header CloudContext.http_header_prefix + 'abc', '123'
       expect(response).to eq({ 'abc' => '123' })
 
       with_session('without header') do
