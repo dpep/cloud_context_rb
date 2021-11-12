@@ -4,7 +4,7 @@ CloudContext
 
 
 ```ruby
-require "cloud_context"
+require 'cloud_context'
 ```
 
 
@@ -27,6 +27,7 @@ Yes please  :)
 - https://webapps-for-beginners.rubymonstas.org/rack/rack_env.html
 - [request_store](https://github.com/steveklabnik/request_store)
 - [request_context](https://github.com/remind101/request_context)
+- [faraday_middleware](https://github.com/lostisland/faraday_middleware)
 
 
 ----
