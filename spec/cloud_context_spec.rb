@@ -20,8 +20,6 @@ describe CloudContext do
   end
 
   describe '.normalize_keys' do
-    subject { CloudContext.to_h.keys }
-
     def normalize(key, normalized)
       CloudContext[key] = 123
       expect(CloudContext.to_h.count).to eq 1
