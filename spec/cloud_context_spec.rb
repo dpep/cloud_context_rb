@@ -19,6 +19,27 @@ describe CloudContext do
     # end
   end
 
+  describe '.normalize_keys' do
+    subject { CloudContext.to_h.keys }
+
+    def normalize(key, normalized)
+      CloudContext[key] = 123
+      expect(CloudContext.to_h.count).to eq 1
+      expect(CloudContext.to_h.keys.first).to eq(normalized)
+      CloudContext.clear
+    end
+
+    it 'normalizes keys' do
+      normalize 'abc', 'abc'
+      normalize 'ABc', 'abc'
+      normalize 'a b c', 'a_b_c'
+      normalize 'a-B-c', 'a_b_c'
+      normalize 'a#b$c', 'a_b_c'
+      normalize 'a 2 c', 'a_2_c'
+      normalize 'a . c', 'a___c'
+    end
+  end
+
   describe '.empty?' do
     it { is_expected.to be_empty }
 

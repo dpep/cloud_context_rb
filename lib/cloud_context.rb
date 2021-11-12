@@ -49,7 +49,7 @@ module CloudContext
   end
 
   def normalize_key(key)
-    key.to_s.downcase.tr('-','_')
+    key.to_s.downcase.gsub(/[^A-Za-z0-9_]/, '_')
   end
 
   def normalize_value(value)
