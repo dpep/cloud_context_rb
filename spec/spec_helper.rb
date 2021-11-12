@@ -3,6 +3,7 @@ require 'ice_age'
 require 'rspec'
 require 'simplecov'
 require 'rack/test'
+require 'rails'
 require 'rspec/matchers/fail_matchers'
 
 SimpleCov.start do

@@ -4,8 +4,8 @@ module CloudContext
   extend self
 
   autoload :Rack, "cloud_context/rack"
+  autoload :Rails, "cloud_context/rails"
   autoload :RSpec, "cloud_context/rspec"
-  autoload :Railtie, "cloud_context/railtie"
 
   def [](key)
     context[normalize_key(key)]

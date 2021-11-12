@@ -2,3 +2,7 @@
 .byebug_history
 coverage
 Gemfile.lock
+
+# Rails
+log
+tmp
