@@ -18,6 +18,3 @@ end
 Faraday::Request.register_middleware(
   cloud_context: -> { CloudContext::Faraday::Adapter },
 )
-
-# header formats
-# https://github.com/lostisland/faraday_middleware/blob/main/lib/faraday_middleware/rack_compatible.rb
