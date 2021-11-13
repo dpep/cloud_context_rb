@@ -8,6 +8,14 @@ require 'cloud_context'
 ```
 
 
+## Size Limitations
+While there is technically no limit to header size, servers generally enforce limits.  For example, Apache's default is 8KB and will return HTTP Status code 413 - Entity Too Large.  Additionally, headers adds overhead to every request being made, so use CloudContext sparingly.  To approximate byte size:
+
+```ruby
+JSON.generate(CloudContext.to_h).bytes.size
+```
+
+
 ----
 ## Contributing
 
