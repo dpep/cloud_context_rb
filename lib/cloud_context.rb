@@ -7,6 +7,7 @@ module CloudContext
   autoload :Rack, 'cloud_context/rack'
   autoload :Rails, 'cloud_context/rails'
   autoload :RSpec, 'cloud_context/rspec'
+  autoload :Sidekiq, 'cloud_context/sidekiq'
 
   def [](key)
     context[normalize_key(key)]
@@ -82,7 +83,7 @@ module CloudContext
 
   def normalize_value(value)
     serialized = JSON.generate(value)
-    if JSON.load(serialized) != value
+    if JSON.parse(serialized) != value
       raise ArgumentError, "will not be deserialized properly: #{value}"
     end
 

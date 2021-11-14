@@ -26,5 +26,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rails', '>= 5'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'rspec-rails'
+  s.add_development_dependency 'sidekiq', '>= 5'
   s.add_development_dependency 'simplecov'
 end
