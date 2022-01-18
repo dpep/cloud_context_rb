@@ -53,6 +53,14 @@ module CloudContext
     end
   end
 
+  def size
+    context.size
+  end
+
+  def bytesize
+    JSON.generate(context).bytesize
+  end
+
   # config
   attr_reader :http_header
 

@@ -131,4 +131,55 @@ describe CloudContext do
       expect(CloudContext.to_h).to eq({ 'abc' => 123 })
     end
   end
+
+  describe '.size' do
+    it { expect(described_class.size).to be 0 }
+
+    it 'tracks each key added' do
+      CloudContext['a'] = 1
+      expect(described_class.size).to be 1
+      CloudContext['b'] = 2
+      expect(described_class.size).to be 2
+      CloudContext['c'] = 3
+      expect(described_class.size).to be 3
+    end
+
+    it 'tracks keys deleted' do
+      CloudContext['a'] = 1
+      expect(described_class.size).to be 1
+
+      CloudContext.delete('a')
+      expect(described_class.size).to be 0
+    end
+  end
+
+  describe '.bytesize' do
+    subject { described_class.bytesize }
+
+    it { is_expected.to be 2 }
+
+    it 'increases with key and value size' do
+      CloudContext['a'] = 1
+
+      is_expected.to be 7
+    end
+
+    it 'is bigger with bigger keys' do
+      CloudContext['abc'] = 1
+
+      is_expected.to be 9
+    end
+
+    it 'is bigger with string values' do
+      CloudContext['abc'] = '1'
+
+      is_expected.to be 11
+    end
+
+    it 'is bigger with bigger values' do
+      CloudContext['abc'] = '123'
+
+      is_expected.to be 13
+    end
+  end
 end
