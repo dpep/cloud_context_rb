@@ -9,10 +9,10 @@ class HardWorker
 
   attr_accessor :expectation
 
-  def perform
+  def perform(*args)
     CloudContext['in_worker'] = true
 
-    expectation&.call
+    expectation&.call(*args)
   end
 end
 
@@ -28,6 +28,43 @@ describe CloudContext::Sidekiq do
 
   let(:worker) { HardWorker.new }
 
+  # sanity check the test setup
+  describe 'HardWorker' do
+    it 'calls HardWorker.perform' do
+      expect(worker).to receive(:perform)
+
+      HardWorker.perform_async
+    end
+
+    it 'calls the expectation proc' do
+      worker.expectation = Proc.new do
+        RSpec::Expectations.fail_with('counter-example')
+      end
+
+      HardWorker.perform_async
+
+      expect {
+        HardWorker.drain
+      }.to fail
+    end
+
+    it 'calls HardWorker.perform with the given args' do
+      args = [ 'a', 'b', 'c' ]
+
+      worker.expectation = Proc.new do |*w_args|
+        expect(w_args).to eq args
+      end
+
+      HardWorker.perform_async(*args)
+    end
+
+    it 'sets a CloudContext variable' do
+      worker.expectation = Proc.new do
+        expect(CloudContext['in_worker']).to be true
+      end
+    end
+  end
+
   describe '.install' do
     it 'loads Sidekiq middleware' do
       expect(Sidekiq.client_middleware.map(&:klass)).to include(
@@ -40,16 +77,11 @@ describe CloudContext::Sidekiq do
   end
 
   describe 'Sidekiq middleware' do
-    before do
-      # sanity check
-      expect(worker).to receive(:perform).and_call_original
-    end
-
     it 'propagates CloudContext to Sidekiq jobs' do
       CloudContext['abc'] = 123
 
       worker.expectation = Proc.new do
-        expect(CloudContext.to_h).to eq('abc' => 123, 'in_worker' => true)
+        expect(CloudContext.to_h).to include('abc' => 123)
       end
 
       HardWorker.perform_async
@@ -68,6 +100,10 @@ describe CloudContext::Sidekiq do
     end
 
     it 'isolates this context from the Sidekiq worker' do
+      worker.expectation = Proc.new do
+        expect(CloudContext.to_h).to eq('in_worker' => true)
+      end
+
       Sidekiq::Testing.inline! do
         HardWorker.perform_async
       end
@@ -87,21 +123,6 @@ describe CloudContext::Sidekiq do
       HardWorker.perform_async
 
       expect(HardWorker.jobs[0]).not_to include(CloudContext::Sidekiq::JOB_KEY)
-    end
-
-    # sanity check the test setup
-    describe 'HardWorker' do
-      it 'calls the expectation proc' do
-        HardWorker.perform_async
-
-        worker.expectation = Proc.new do
-          RSpec::Expectations.fail_with('counter-example')
-        end
-
-        expect {
-          HardWorker.drain
-        }.to fail
-      end
     end
   end
 end
