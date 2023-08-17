@@ -22,7 +22,6 @@ describe CloudContext::Sidekiq do
   end
 
   after do
-    CloudContext.clear
     HardWorker.drain
   end
 

@@ -8,12 +8,12 @@ require 'rspec/matchers/fail_matchers'
 require 'simplecov'
 
 SimpleCov.start do
-  add_filter /spec/
+  add_filter 'spec/'
 end
 
 if ENV['CI'] == 'true' || ENV['CODECOV_TOKEN']
-  require 'codecov'
-  SimpleCov.formatter = SimpleCov::Formatter::Codecov
+  require 'simplecov_json_formatter'
+  SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
 end
 
 # load this gem
@@ -31,6 +31,8 @@ RSpec.configure do |config|
 
   include Rack::Test::Methods
   include RSpec::Matchers::FailMatchers
+
+  config.before { CloudContext::RSpec.enable }
 end
 
 # Dir['./spec/support/**/*.rb'].sort.each { |f| require f }

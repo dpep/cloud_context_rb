@@ -1,12 +1,11 @@
 describe CloudContext::Rack do
-  after { CloudContext.clear }
-
   describe '#call' do
     subject do
       header CloudContext.http_header, JSON.generate(CloudContext.to_h)
 
       # use rack-test to normalize headers
-      env = Rack::MockRequest.env_for('/', current_session.send(:headers_for_env))
+      headers = current_session.instance_variable_get(:@env)
+      env = Rack::MockRequest.env_for('/', headers)
 
       CloudContext::Rack::Adapter.new(app).call(env)
     end

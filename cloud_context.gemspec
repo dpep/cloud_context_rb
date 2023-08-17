@@ -18,14 +18,13 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'byebug'
   s.add_development_dependency 'codecov'
-  s.add_development_dependency 'faraday'
-  s.add_development_dependency 'faraday-rack'
+  s.add_development_dependency 'faraday', '~> 1'
   s.add_development_dependency 'ice_age'
   s.add_development_dependency 'rack'
   s.add_development_dependency 'rack-test'
-  s.add_development_dependency 'rails', '>= 5'
+  s.add_development_dependency 'rails', '>= 5', '~> 6'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'rspec-rails'
-  s.add_development_dependency 'sidekiq', '>= 5'
+  s.add_development_dependency 'sidekiq', '>= 5', '~> 6'
   s.add_development_dependency 'simplecov'
 end

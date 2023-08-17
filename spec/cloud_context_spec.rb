@@ -1,6 +1,4 @@
 describe CloudContext do
-  after { CloudContext.clear }
-
   describe '.[]' do
     it 'gets values' do
       CloudContext['abc'] = 123

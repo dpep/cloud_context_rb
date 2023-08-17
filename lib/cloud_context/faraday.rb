@@ -6,15 +6,17 @@ module CloudContext
 
     class Adapter < ::Faraday::Middleware
       def on_request(env)
-        return if CloudContext.empty?
+        data = options[:context]&.call || CloudContext.to_h
+        return if data.empty?
 
-        context = JSON.generate(CloudContext.to_h)
-        env[:request_headers][CloudContext.http_header] = context
+        header = options[:header]&.upcase&.tr('-', '_') || CloudContext.http_header
+
+        env[:request_headers][header] = JSON.generate(data)
       end
     end
   end
 end
 
-Faraday::Request.register_middleware(
+Faraday::Middleware.register_middleware(
   cloud_context: -> { CloudContext::Faraday::Adapter },
 )

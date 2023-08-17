@@ -7,20 +7,6 @@ describe CloudContext::RSpec, :order => :defined do
     end
   end
 
-  context 'without RSpec Adapter' do
-    it 'matters what we put into CloudContext' do
-      CloudContext['abc'] = 123
-    end
-
-    it 'does not start with an empty context' do
-      expect { is_expected.to be_empty }.to fail
-    end
-
-    it 'needs to be cleared manually' do
-      CloudContext.clear
-    end
-  end
-
   context 'with RSpec Adapter enabled' do
     before { described_class.enable }
 
@@ -33,7 +19,7 @@ describe CloudContext::RSpec, :order => :defined do
     end
 
     it 'does not matter what we put into CloudContext here' do
-      CloudContext['abc'] = 789
+      CloudContext['abc'] = 123
     end
 
     it 'starts with an empty context' do
@@ -53,7 +39,7 @@ describe CloudContext::RSpec, :order => :defined do
     end
 
     it '*does* matter what we put into CloudContext here' do
-      CloudContext['abc'] = 111
+      CloudContext['abc'] = 456
     end
 
     it 'does not end with an empty context' do
