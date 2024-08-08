@@ -8,7 +8,7 @@ require 'rspec/matchers/fail_matchers'
 require 'simplecov'
 
 SimpleCov.start do
-  add_filter 'spec/'
+  add_filter '/spec/'
 end
 
 if ENV['CI'] == 'true' || ENV['CODECOV_TOKEN']
@@ -35,4 +35,4 @@ RSpec.configure do |config|
   config.before { CloudContext::RSpec.enable }
 end
 
-# Dir['./spec/support/**/*.rb'].sort.each { |f| require f }
+Dir['./spec/support/**/*.rb'].sort.each { |f| require f }
