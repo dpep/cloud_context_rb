@@ -154,7 +154,7 @@ describe CloudContext do
   describe '.bytesize' do
     subject { described_class.bytesize }
 
-    it { is_expected.to eq 2 }
+    it { is_expected.to eq 0 }
 
     it 'increases with key and value size' do
       CloudContext['a'] = 1

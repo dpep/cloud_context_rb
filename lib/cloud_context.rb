@@ -58,7 +58,7 @@ module CloudContext
   end
 
   def bytesize
-    JSON.generate(context).bytesize
+    empty? ? 0 : JSON.generate(context).bytesize
   end
 
   # config
