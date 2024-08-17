@@ -26,7 +26,7 @@ describe CloudContext::Rack do
       Rack::Lint.new(CloudContext::Rack::Adapter.new(app)).call(env)
     end
 
-    it 'propogates into Rack context' do
+    it 'propogates this context into Rack' do
       CloudContext['abc'] = 123
       CloudContext['foo'] = 'bar'
 
