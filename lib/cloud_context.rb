@@ -35,9 +35,7 @@ module CloudContext
   end
 
   def fetch(key, *args, &block)
-    normalize_value(
-      context.fetch(normalize_key(key), *args, &block)
-    )
+    context.fetch(normalize_key(key), *args, &block)
   end
 
   def to_h

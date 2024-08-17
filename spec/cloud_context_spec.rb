@@ -75,6 +75,24 @@ describe CloudContext do
     end
   end
 
+  describe '.fetch' do
+    before { CloudContext['abc'] = 123 }
+
+    it 'gets values' do
+      expect(CloudContext.fetch('abc')).to eq 123
+    end
+
+    it 'normalizes keys' do
+      expect(CloudContext.fetch(:abc)).to eq 123
+    end
+
+    it 'raises when key missing' do
+      expect {
+        CloudContext.fetch('xyz')
+      }.to raise_error(KeyError)
+    end
+  end
+
   describe '.clear' do
     before { CloudContext['abc'] = 123 }
 
