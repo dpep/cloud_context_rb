@@ -7,6 +7,11 @@ require 'rspec'
 require 'rspec/matchers/fail_matchers'
 require 'simplecov'
 
+
+ENV['RACK_ENV'] = ENV['RAILS_ENV'] = (
+  ENV['RACK_ENV'] || ENV['RAILS_ENV'] || 'test'
+)
+
 SimpleCov.start do
   add_filter '/spec/'
 end
