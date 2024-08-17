@@ -1,20 +1,19 @@
-package_name = Dir.glob('*.gemspec')[0].split('.')[0]
-require "./lib/#{package_name}/version"
+require "./lib/cloud_context/version"
 
 package = CloudContext
 
 
 Gem::Specification.new do |s|
-  s.name        = package_name
+  s.name        = File.basename(__FILE__, ".gemspec")
   s.version     = package.const_get('VERSION')
   s.authors     = ['Daniel Pepper']
   s.summary     = package.to_s
   s.description = '...'
-  s.homepage    = "https://github.com/dpep/#{package_name}_rb"
+  s.files       = `git ls-files * ':!:spec'`.split("\n")
+  s.homepage    = "https://github.com/dpep/cloud_context_rb"
   s.license     = 'MIT'
 
-  s.files       = Dir.glob('lib/**/*')
-  s.test_files  = Dir.glob('spec/**/*_spec.rb')
+  s.required_ruby_version = ">= 3"
 
   s.add_development_dependency 'byebug'
   s.add_development_dependency 'codecov'
