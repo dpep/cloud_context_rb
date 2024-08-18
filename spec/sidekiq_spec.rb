@@ -1,5 +1,7 @@
 require 'sidekiq/testing'
 
+Sidekiq.logger.level = Logger::WARN
+
 Sidekiq::Testing.server_middleware do |chain|
   chain.add CloudContext::Sidekiq::ServerAdapter
 end
@@ -66,9 +68,13 @@ describe CloudContext::Sidekiq do
 
   describe '.install' do
     it 'loads Sidekiq middleware' do
-      expect(Sidekiq.client_middleware.map(&:klass)).to include(
+      client_middleware = Sidekiq.configure_client do |config|
+        config.client_middleware.map(&:klass)
+      end
+      expect(client_middleware).to include(
         CloudContext::Sidekiq::ClientAdapter
       )
+
       expect(Sidekiq::Testing.server_middleware.map(&:klass)).to include(
         CloudContext::Sidekiq::ServerAdapter
       )

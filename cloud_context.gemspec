@@ -21,9 +21,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'ice_age'
   s.add_development_dependency 'rack'
   s.add_development_dependency 'rack-test'
-  s.add_development_dependency 'rails', '>= 5', '~> 6'
+  s.add_development_dependency 'rails', '~> 6'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'rspec-rails'
-  s.add_development_dependency 'sidekiq', '>= 5', '~> 6'
+  s.add_development_dependency 'sidekiq', '~> 7'
   s.add_development_dependency 'simplecov'
 end
