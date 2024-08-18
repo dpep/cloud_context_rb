@@ -198,4 +198,24 @@ describe CloudContext do
       is_expected.to eq 13
     end
   end
+
+  describe 'threading' do
+    before { CloudContext['abc'] = 123 }
+
+    it 'isolates each threads context' do
+      res = Fiber.new do
+        CloudContext['abc']
+      end.resume
+
+      expect(res).to be nil
+    end
+
+    it 'isolates context from threads' do
+      Fiber.new do
+        CloudContext['abc'] = 456
+      end.resume
+
+      expect(CloudContext['abc']).to eq 123
+    end
+  end
 end
