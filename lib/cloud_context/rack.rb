@@ -8,7 +8,7 @@ module CloudContext
       context = env["HTTP_#{CloudContext.http_header}"]
       return unless context
 
-      CloudContext.update(JSON.load(context))
+      CloudContext.update(JSON.parse(context))
     rescue JSON::ParserError
     end
 
