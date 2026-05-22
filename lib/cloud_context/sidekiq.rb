@@ -5,6 +5,7 @@ module CloudContext
     extend self
 
     JOB_KEY = 'cloud_context'
+    ACTIVE_JOB_WRAPPER = 'ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper'
 
     def install
       ::Sidekiq.configure_client do |config|
@@ -27,7 +28,9 @@ module CloudContext
 
     class ClientAdapter
       def call(_, job, *)
-        unless CloudContext.empty?
+        # ActiveJob serializes CloudContext into its own payload, so we
+        # don't duplicate it at the Sidekiq layer.
+        unless job['class'] == ACTIVE_JOB_WRAPPER || CloudContext.empty?
           job[JOB_KEY] = JSON.generate(CloudContext.to_h)
         end
 
@@ -37,12 +40,18 @@ module CloudContext
 
     class ServerAdapter
       def call(worker, job, *)
-        CloudContext.contextualize do
-          if job[JOB_KEY]
-            CloudContext.update(JSON.parse(job.delete(JOB_KEY)))
-          end
-
+        # ActiveJob handles its own contextualize + hydration via
+        # CloudContext::ActiveJob::Adapter.
+        if job['class'] == ACTIVE_JOB_WRAPPER
           yield
+        else
+          CloudContext.contextualize do
+            if job[JOB_KEY]
+              CloudContext.update(JSON.parse(job.delete(JOB_KEY)))
+            end
+
+            yield
+          end
         end
       end
     end

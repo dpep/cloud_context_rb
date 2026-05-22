@@ -3,6 +3,7 @@ require 'cloud_context/version'
 module CloudContext
   extend self
 
+  autoload :ActiveJob, 'cloud_context/active_job'
   autoload :Faraday, 'cloud_context/faraday'
   autoload :Rack, 'cloud_context/rack'
   autoload :Rails, 'cloud_context/rails'
