@@ -16,10 +16,14 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = ">= 3"
 
+  s.add_development_dependency 'base64'
+  s.add_development_dependency 'bigdecimal'
   s.add_development_dependency 'byebug'
   s.add_development_dependency 'codecov'
   s.add_development_dependency 'faraday', '~> 1'
   s.add_development_dependency 'ice_age'
+  s.add_development_dependency 'logger'
+  s.add_development_dependency 'mutex_m'
   s.add_development_dependency 'rack'
   s.add_development_dependency 'rack-test'
   s.add_development_dependency 'rails', '~> 6'

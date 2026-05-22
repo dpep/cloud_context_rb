@@ -1,3 +1,7 @@
+require 'base64'
+require 'bigdecimal'
+require 'logger'
+require 'mutex_m'
 require 'byebug'
 require 'faraday'
 require 'ice_age'
