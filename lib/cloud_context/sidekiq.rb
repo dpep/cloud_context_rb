@@ -39,7 +39,7 @@ module CloudContext
       def call(worker, job, *)
         CloudContext.contextualize do
           if job[JOB_KEY]
-            CloudContext.update(JSON.load(job.delete(JOB_KEY)))
+            CloudContext.update(JSON.parse(job.delete(JOB_KEY)))
           end
 
           yield
