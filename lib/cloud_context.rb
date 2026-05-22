@@ -17,8 +17,10 @@ module CloudContext
     if value.nil?
       delete(key)
       nil
-    else
+    elsif @validate_values
       context[normalize_key(key)] = normalize_value(value)
+    else
+      context[normalize_key(key)] = value
     end
   end
 
@@ -75,8 +77,10 @@ module CloudContext
 
   # config
   attr_reader :http_header
+  attr_accessor :validate_values
 
   @http_header = 'X_CLOUD_CONTEXT'
+  @validate_values = true
   def http_header=(header)
     @http_header = header.upcase.tr('-', '_')
   end

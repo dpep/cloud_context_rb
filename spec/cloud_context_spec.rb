@@ -96,6 +96,46 @@ describe CloudContext do
     end
   end
 
+  describe '.validate_values' do
+    around do |example|
+      original = CloudContext.validate_values
+      example.run
+      CloudContext.validate_values = original
+    end
+
+    it 'defaults to true' do
+      expect(CloudContext.validate_values).to be true
+    end
+
+    context 'when true' do
+      before { CloudContext.validate_values = true }
+
+      it 'rejects non-JSON-roundtrippable values' do
+        expect {
+          CloudContext['abc'] = :symbol
+        }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'when false' do
+      before { CloudContext.validate_values = false }
+
+      it 'skips validation' do
+        expect {
+          CloudContext['abc'] = :symbol
+        }.not_to raise_error
+
+        expect(CloudContext['abc']).to eq :symbol
+      end
+
+      it 'still routes nil through delete' do
+        CloudContext['abc'] = 123
+        CloudContext['abc'] = nil
+        expect(CloudContext).to be_empty
+      end
+    end
+  end
+
   describe '.http_header' do
     subject { described_class.http_header }
 
