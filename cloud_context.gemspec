@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = ">= 3"
 
   s.add_development_dependency 'base64'
+  s.add_development_dependency 'benchmark'
   s.add_development_dependency 'bigdecimal'
   s.add_development_dependency 'byebug'
   s.add_development_dependency 'codecov'
