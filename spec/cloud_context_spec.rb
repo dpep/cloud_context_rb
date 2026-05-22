@@ -163,6 +163,10 @@ describe CloudContext do
       expect(CloudContext['abc']).to eq 123
       expect(CloudContext['foo']).to eq 'bar'
     end
+
+    it 'returns self, like Hash#update' do
+      expect(CloudContext.update(abc: 123)).to be CloudContext
+    end
   end
 
   describe '.contextualize' do
