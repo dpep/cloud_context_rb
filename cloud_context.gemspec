@@ -1,14 +1,15 @@
-require "./lib/cloud_context/version"
-
-package = CloudContext
-
+require_relative 'lib/cloud_context/version'
 
 Gem::Specification.new do |s|
-  s.name        = File.basename(__FILE__, ".gemspec")
-  s.version     = package.const_get('VERSION')
+  s.name        = 'cloud_context'
+  s.version     = CloudContext::VERSION
   s.authors     = ['Daniel Pepper']
-  s.summary     = package.to_s
-  s.description = '...'
+  s.summary     = 'CloudContext'
+  s.description = <<~DESCRIPTION
+    Thread-local request context that rides along with downstream
+    HTTP and Sidekiq calls via headers, so request-scoped metadata
+    (request id, tenant, user) propagates across service boundaries.
+  DESCRIPTION
   s.files       = `git ls-files * ':!:spec'`.split("\n")
   s.homepage    = "https://github.com/dpep/cloud_context_rb"
   s.license     = 'MIT'
