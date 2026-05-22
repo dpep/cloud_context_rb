@@ -51,6 +51,51 @@ describe CloudContext do
     end
   end
 
+  describe '.each' do
+    it 'yields each key/value pair' do
+      CloudContext['a'] = 1
+      CloudContext['b'] = 2
+
+      pairs = []
+      CloudContext.each { |k, v| pairs << [k, v] }
+
+      expect(pairs).to contain_exactly(['a', 1], ['b', 2])
+    end
+
+    it 'returns an Enumerator without a block' do
+      CloudContext['a'] = 1
+
+      expect(CloudContext.each).to be_an(Enumerator)
+      expect(CloudContext.each.to_a).to eq([['a', 1]])
+    end
+  end
+
+  describe '.keys' do
+    it 'returns the keys' do
+      CloudContext['a'] = 1
+      CloudContext[:b] = 2
+
+      expect(CloudContext.keys).to contain_exactly('a', 'b')
+    end
+
+    it 'is empty when no context is set' do
+      expect(CloudContext.keys).to eq([])
+    end
+  end
+
+  describe '.values' do
+    it 'returns the values' do
+      CloudContext['a'] = 1
+      CloudContext['b'] = 'two'
+
+      expect(CloudContext.values).to contain_exactly(1, 'two')
+    end
+
+    it 'is empty when no context is set' do
+      expect(CloudContext.values).to eq([])
+    end
+  end
+
   describe '.http_header' do
     subject { described_class.http_header }
 
