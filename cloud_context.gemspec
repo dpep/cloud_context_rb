@@ -4,11 +4,14 @@ Gem::Specification.new do |s|
   s.name        = 'cloud_context'
   s.version     = CloudContext::VERSION
   s.authors     = ['Daniel Pepper']
-  s.summary     = 'CloudContext'
+  s.summary     = 'Propagate request context across distributed systems'
   s.description = <<~DESCRIPTION
-    Thread-local request context that rides along with downstream
-    HTTP and Sidekiq calls via headers, so request-scoped metadata
-    (request id, tenant, user) propagates across service boundaries.
+    CloudContext is a thread-local key/value store that rides along with
+    downstream HTTP requests (via headers) and Sidekiq jobs (via job
+    metadata), so request-scoped metadata such as request id, tenant id,
+    and user id propagates automatically across service and process
+    boundaries. Ships with Rack, Rails, Faraday, Sidekiq, and RSpec
+    integrations.
   DESCRIPTION
   s.files       = `git ls-files * ':!:spec'`.split("\n")
   s.homepage    = "https://github.com/dpep/cloud_context_rb"
