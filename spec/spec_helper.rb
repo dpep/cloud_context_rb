@@ -1,4 +1,5 @@
 require 'base64'
+require 'benchmark'
 require 'bigdecimal'
 require 'logger'
 require 'mutex_m'
