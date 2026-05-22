@@ -57,6 +57,8 @@ module CloudContext
         self[key] = value
       end
     end
+
+    self
   end
 
   def values
