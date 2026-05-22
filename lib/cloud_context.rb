@@ -30,12 +30,20 @@ module CloudContext
     context.delete(normalize_key(key))
   end
 
+  def each(&block)
+    context.each(&block)
+  end
+
   def empty?
     context.empty?
   end
 
   def fetch(key, *args, &block)
     context.fetch(normalize_key(key), *args, &block)
+  end
+
+  def keys
+    context.keys
   end
 
   def to_h
@@ -49,6 +57,10 @@ module CloudContext
         self[key] = value
       end
     end
+  end
+
+  def values
+    context.values
   end
 
   def size
