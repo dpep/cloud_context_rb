@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.homepage    = "https://github.com/dpep/cloud_context_rb"
   s.license     = 'MIT'
 
-  s.required_ruby_version = ">= 3"
+  s.required_ruby_version = ">= 3.3"
 
   s.add_development_dependency 'base64'
   s.add_development_dependency 'benchmark'
