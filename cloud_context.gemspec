@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'base64'
   s.add_development_dependency 'benchmark'
   s.add_development_dependency 'bigdecimal'
-  s.add_development_dependency 'byebug'
+  s.add_development_dependency 'debug'
   s.add_development_dependency 'codecov'
   s.add_development_dependency 'faraday', '~> 2'
   s.add_development_dependency 'faraday-rack'
